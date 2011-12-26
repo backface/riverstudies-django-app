@@ -13,9 +13,9 @@
 
 		<div id="headinfo">River Studies | river view player 2.0 alpha</div>
 		<div id="titlefield">
-			<span id="title"></span>
+			<span id="title"></span> 
 		</div>
-
+		
 		<div id="info" class="overlay">
 			RIVER: <span class="overlay">{{track.river.name}}</span><br />
 				
@@ -31,26 +31,26 @@
 			{% if track.desc %}
 				DESCRIPTION: <span class="overlay">{{track.desc}}</span><br />
 			{% endif %}
+			<div id="show_track" class="button geoinfo" title="show track">show track</div>
 		</div>
 		
 		
-		<div id="controls">
-			<span id="show_track" class="button geoinfo" title="show track">show track</span>
-			play
-			<span id="back" class="button" title="rewind">&laquo;</span>
-			<span id="play" class="button" title="play/pause">||</span>
-			<span id="forward" class="button" title="fast forward">&raquo;</span>
-			speed
-			<span id="slower" class="button" title="slow down">- &raquo;</span>
-			<span id="faster" class="button" title="faster">+ &raquo;</span>
-			zoom
-			<span id="zoomin" class="button" title="zoom in">+</span>
-			<span id="zoomout" class="button" title="zoom out">-</span>
+		<div id="controls">	
+			<div id="back" class="img_button rewind" title="rewind">&nbsp;</div>
+			<div id="play" class="img_button play" title="play/pause">&nbsp;</div>
+			<div id="forward" class="img_button forward" title="fast forward">&nbsp;</div>
+			<div class="img_button_label">Speed</div>
+			<div id="faster" class="img_button plus" title="faster">&nbsp;</div>
+			<div id="slower" class="img_button minus" title="slower">&nbsp;</div>			
+			<div class="img_button_label">Zoom</div> 
+			<div id="zoomin" class="img_button plus" title="zoom in">&nbsp;</div>
+			<div id="zoomout" class="img_button minus" title="zoom out">&nbsp;</div>
 		</div>			
 	
 		<div id="river"></div>
 
 		<div id="gpsinfo" class="geoinfo">
+			
 			<div id="log_left" class="overlay">
 				LAT=<span class="lat">n/a</span>° 
 				LON=<span class="lon">n/a</span>°

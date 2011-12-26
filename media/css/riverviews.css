@@ -65,17 +65,29 @@ body { background: #000000; }
 	z-index:2000;background:#333;
 	opacity : 0.8;filter: alpha(opacity=80);
 }
+#show_track {float:left;margin: 3px 10px 2px 0px;z-index:2003;}
+
 #controls {position:absolute;right:10px;top:25px;z-index:2003;
 	opacity : 0.8;filter: alpha(opacity=80);
 	border:0px dotted #666;background:#333;
-	color:#eee;padding:6px;padding-bottom:7px;
+	color:#eee;padding:1px 5px 1px 5px;text-align:right;
 	}
-#controls:hover {border:0px dotted #c0c0c0;}
+#controls:hover {border:0px dotted #c0c0c0;}	
 
-	
-#forward{margin-right:25px}
-#faster{margin-right:25px}
-#show_track {margin-right:20px}
+.play{background:url(/media/img/paused.png) no-repeat;}
+.paused{background:url(/media/img/play.png) no-repeat;}
+.rewind{background:url(/media/img/rewind.png) no-repeat;}
+.plus{background:url(/media/img/plus.png) no-repeat;}
+.minus{background:url(/media/img/minus.png) no-repeat;}
+.forward {margin-right:25px;background:url(/media/img/forward.png) no-repeat;}
+
+#forward {margin-right:25px;}
+#slower{margin-right:25px}
+
+
+.img_button {display:inline;float:left;width:18px;height:18px;margin:2px;border:0px solid #444;}
+.img_button_label {display:inline;float:left;height:18px;padding: 5px 2px 2px 2px;}
+.img_button:hover {border:0px solid #ccc;cursor:pointer}
 
 #log_left, #log_right, #log_center, #date_left, #date_right
   {font-family:Arial;font-size:10px;background:#333;}
