@@ -61,11 +61,12 @@ body { background: #000000; }
 }
 	
 #info { position:absolute;top:60px;left:5px;
+	padding-top:6px;line-height:14px;
 	font-family:Arial;font-size:10px;
 	z-index:2000;background:#333;
 	opacity : 0.8;filter: alpha(opacity=80);
 }
-#show_track {float:left;margin: 3px 10px 2px 0px;z-index:2003;}
+#show_track {float:left;margin: 5px 10px 2px 0px;z-index:2003;}
 
 #controls {position:absolute;right:10px;top:25px;z-index:2003;
 	opacity : 0.8;filter: alpha(opacity=80);
@@ -86,7 +87,7 @@ body { background: #000000; }
 
 
 .img_button {display:inline;float:left;width:18px;height:18px;margin:2px;border:0px solid #444;}
-.img_button_label {display:inline;float:left;height:18px;padding: 5px 2px 2px 2px;}
+.img_button_label {display:inline;float:left;height:18px;padding: 4px 2px 2px 2px;}
 .img_button:hover {border:0px solid #ccc;cursor:pointer}
 
 #log_left, #log_right, #log_center, #date_left, #date_right
@@ -115,10 +116,11 @@ opacity: 0.8;filter: alpha(opacity=80);	}
 	opacity: 0.8;filter: alpha(opacity=80);}
 .button {
 	background:#333;color:#eeeeee;
-	padding:2px 4px 3px 4px;
+	padding:2px 6px 3px 6px;
 	font-size:10px;text-transform:uppercase;font-weight:bold;
 	border:1px solid #000;
 	height:12px;
+	line-height:12px;
 }
 .button:hover {background:white;color:#111;border:1px solid #000;cursor:pointer}
 

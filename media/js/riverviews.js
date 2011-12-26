@@ -642,12 +642,16 @@ river.initControlButtons = function ()
 				if (gps) {
 					window.clearInterval(river.positionTimer);
 					river.positionTimer=0;
-				}				
+				}
+				$("#play").removeClass("play");
+				$("#play").addClass("paused");
 			} else {
 				river.autopan=1;
 				river.autopanTimer = window.setInterval('river.doPan()', 50);
 				if (gps)
 					river.positionTimer = window.setInterval('river.updatePosition()', maps.update_cyle);
+				$("#play").removeClass("paused");
+				$("#play").addClass("play");
 			}
 	});
 
