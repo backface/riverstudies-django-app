@@ -12,7 +12,6 @@ urlpatterns = patterns('',
 	(r'^(?P<id>\d+)/(?P<offset>\d+)$',
 		'riverstudies.riverview.views.view'),
 	
-	
 	(r'^get_tracksegment/(?P<id>\d+)/(?P<start>\d+)/(?P<stop>\d+)/$',
 		'riverstudies.riverview.views.get_tracksegment'),
 
@@ -31,6 +30,7 @@ urlpatterns = patterns('',
 
 	(r'^(?P<name>\w+)/$',
 		'riverstudies.riverview.views.view_by_name'),
+		
 	(r'^(?P<name>\w+)/(?P<offset>\d+)$',
 		'riverstudies.riverview.views.view_by_name'),		
 		
