@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>River Studies | webplayer</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />		    
@@ -11,10 +11,11 @@
 	  
 	<body onload='river.load({{track.id}},{{offset}})'>
 
-		<div id="headinfo">River Studies | river view player 2.0 alpha</div>
+		<div id="headinfo">River Studies | river view player 2.0 (Alpha) <span id="show_all">show all tracks</span></div>
 		<div id="titlefield">
 			<span id="title"></span> 
 		</div>
+		<div id="side_right"></div>
 		
 		<div id="info" class="overlay">
 			RIVER: <span class="overlay">{{track.river.name}}</span><br />
@@ -76,21 +77,23 @@
 			 <div id="ol_map"></div>
 				
 			 <div id="track_map">
-				<div id="track_map_head">
-					<div id="track_map_title">overview of recorded track [total length: {{track.length|floatformat}} km]</div>
-					<div id="track_map_close" class="button">x</div>
+				<div id="track_map_head" class="window_head">
+					<div id="track_map_title" class="window_title">overview of recorded track [total length: {{track.length|floatformat}} km]</div>
+					<div id="track_map_close" class="button  window_close">x</div>
 				</div>
 			 </div>
 		</div>
 		<div id="status_msg"></div>
-		<!--<div id="msg">
-			<span>coming soon....</span><span>meanwhile see:</span><br />
-			<a href="../aerial">preliminary aerial scans</a><br />
-			<a href="http://www.danubepanorama.net">Danube Panorama Project ("legacy")</a><br />
-			<a href="http://www.nilestudies.net">Nile Studies ("legacy")</a><br />				
-		</div>-->
+
 		 
 		<div id="debug" class="overlay logs"></div>
+		<div id="track_list" class="">
+			<div id="track_list_head" class="window_head">
+				<div id="track_list_title" class="window_title">list of recorded river tracks</div>
+				<div id="track_list_close" class="button window_close">x</div>
+			</div>
+			<div id="track_list_data"></div>
+		</div>
 		
 		<script type="text/javascript" >resize()</script>
 

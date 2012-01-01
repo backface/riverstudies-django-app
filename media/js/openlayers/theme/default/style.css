@@ -35,7 +35,7 @@ div.olLayerDiv {
     position: absolute; 
     display: block;
 }
-.olControlAttribution a, .olControlAttribution a:visited {color:#000000}
+.olControlAttribution a, .olControlAttribution a:visited {}
 .olControlScale {
     right: 3px;
     bottom: 3em;

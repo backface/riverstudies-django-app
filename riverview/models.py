@@ -26,7 +26,7 @@ class Track(models.Model):
 		verbose_name_plural = "Tracks"	
 	       
 	def __unicode__(self):
-		return self.name
+		return self.title
 
 
 class TrackPoint(models.Model):
@@ -45,3 +45,15 @@ class TrackPoint(models.Model):
 
 	def __unicode__(self):
 		return str(self.id)
+
+
+class Label(models.Model):
+	track = models.ForeignKey(Track)
+	geom = models.PointField(srid=900913)
+	name = models.CharField(max_length=255)
+	desc = models.TextField(blank=True)	
+	class Meta:
+		verbose_name_plural = "Labels"
+
+	def __unicode__(self):
+		return str(self.name)		

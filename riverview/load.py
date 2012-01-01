@@ -2,7 +2,7 @@ from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import DataSource
 from django.contrib.gis.geos import Point
 from django.contrib.gis.geos import LineString
-from models import Track, TrackPoint
+from models import Track, TrackPoint, Label
 from riverstudies import settings
 
 import os
@@ -13,6 +13,8 @@ import re
 #tile_offset = 650
 #river_id=1
 # import settings
+
+# for importing trackfile
 ######################
 in_file = "/data/projects/slitscan/malisca/tile-data/2011-12-13--varanasi-deshaked/track.log.csv"
 gpx_file = "/data/projects/river-studies/web-data/2011-12-13--varanasi/track2.gpx"
@@ -27,6 +29,11 @@ data_path = "/media/data/2011-12-13--varanasi"
 river_id=3
 delimiter=";"
 ###############################
+
+# for importing labels
+######################
+track_id = 22
+
 
 def loadTrackFromFile(in_file=in_file,verbose=True,trackPointsOnly=False):
 	
@@ -142,6 +149,20 @@ def loadTrackPointsFromGPX(gpx_file=gpx_file,verbose=True):
 		i += 1
 		#trackpoint = TrackPoint(track_id=13,px=px, time=t, geom=pnt, speed=spd, altitude=alt, heading=brg)
 
+def loadLabelsFromFile(in_file,track_id=track_id):
+	
+	infile = os.path.abspath(os.path.join(os.path.dirname(__file__), in_file))
+	logReader = csv.reader(open(infile, 'rb'), delimiter="\t", quotechar='"')
+	for row in logReader:
+		y = row[0]
+		x= row[1]
+		name = row[2].title()
+		desc = row[3].title()
+		point = "POINT(%s %s)" % (x, y)
+		label = Label(name=name, geom=point, track_id=track_id )
+		label.save()
+		print point, name,  track_id
+		
 
 def run():
 	loadTrackFromFile(in_file)

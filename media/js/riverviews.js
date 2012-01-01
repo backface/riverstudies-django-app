@@ -1,9 +1,12 @@
 var gps=1;
 var debug=0;
+var showmousepos=1;
 var info=1;
+var index=1;
+var label_edit=1;
 
 var river = {};
-river.view = null
+river.view = null;
 river.autopanTimer = null;
 river.autopan = true;
 river.positionTimer = null;
@@ -12,10 +15,16 @@ river.height = null;
 river.length = null;
 river.stepsize = 2.0;
 river.offset = 0;
+river.global_offset = 0;
 river.id = 0;
 river.meta_url =  "/view/get_meta/"
 river.path = null;
 river.hasgps = true;
+river.pan_interval = 100;
+river.ffstep = 500.0;
+
+river.labels = {}
+river.labels.layer = null;
 
 river.gps = {};
 river.gps.buffer = {}
@@ -49,6 +58,8 @@ maps.track = {};
 maps.track.map = null;
 maps.track.layers = {};
 
+
+count = 0;
 
 // avoid pink tiles
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
@@ -100,12 +111,11 @@ maps.track.controlClick = OpenLayers.Class(OpenLayers.Control, {
 		url = "http://"+ window.location.host +window.location.pathname;
 		url = url + "?lat="+ lonlat.lat + "&lon=" + lonlat.lon;
 	
-		// hide map now
-		//maps.track.hide();              
 		status_msg("find nearest track point..");
 		
 		jQuery.getJSON( "/view/get_nearest_px/"+river.id+"/?lat="+lonlat.lat+"&lon="+lonlat.lon ,
 			function(data) {
+				maps.track.hide();      
 				px = data[0][1];
 				status_msg("jumping to new location.");
 				river.jumpTo(px);
@@ -114,13 +124,12 @@ maps.track.controlClick = OpenLayers.Class(OpenLayers.Control, {
 		//window.location.href = url
 	}
 });
+
+
 maps.track.init = function (tr) {
-	OpenLayers.Control.Click = maps.track.controlClick;            
-	
+	          	
 	track = OpenLayers.Geometry.fromWKT(tr);
-	//rtrack = OpenLayers.Geometry.fromWKT(rtr);
 	maps.track.map = new OpenLayers.Map("track_map", {controls:[]});
-	//maps.track.map = new OpenLayers.Map("track_map");
 	maps.track.layers.base = new OpenLayers.Layer.OSM();
 	maps.track.map.addLayer(maps.track.layers.base);
 	maps.track.layers.vector = new OpenLayers.Layer.Vector("track_layer"); 
@@ -135,22 +144,17 @@ maps.track.init = function (tr) {
             strokeColor: "#000000",
             strokeOpacity: 1.0,
             strokeWidth: 5
-        });
-
-	/*maps.track.features.rtrack = new OpenLayers.Feature.Vector(river.transform(
-		new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-		new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
-		), null, {
-            strokeColor: "#ffffff",
-            strokeOpacity: 1.0,
-            strokeWidth: 5
-        });  */      
+        });  
   
 	maps.track.layers.vector.addFeatures(maps.track.track);
 	maps.track.map.zoomToExtent(maps.track.track.geometry.getBounds());
 
+	OpenLayers.Control.Click = maps.track.controlClick;  
 	var click = new OpenLayers.Control.Click();
 	maps.track.map.addControl(click);
+	
+	maps.track.map.addControl(new OpenLayers.Control.Attribution());
+	maps.track.map.addControl(new OpenLayers.Control.PanZoom());
 	click.activate();
 
 	return true;	
@@ -258,11 +262,22 @@ maps.detail.updateHeading = function (brg,lat,lon) {
 	maps.detail.layers.markers.addMarker(marker);
 }
 
+maps.detail.hide = function() {
+	$("#ol_map").hide();
+	$("#map_button").html("show map");
+}
+
+maps.detail.show = function() {
+	$("#ol_map").show();
+	$("#map_button").html("hide map");
+}
+
 river.load = function() {
 	load(0,0);
 }
 
 river.load = function(i,o){
+	river.getTrackList();
 	river.offset = o;
 	river.id = i;
 	river.loadMetaData(river.meta_url + i + "/");	
@@ -279,6 +294,111 @@ river.loadMetaData = function(url) {
 			river.init(data[0].fields);
 		});
 }
+
+river.controlClick = OpenLayers.Class(OpenLayers.Control, {                
+	defaultHandlerOptions: {
+		'single': false,
+		'double': true,
+		'pixelTolerance': 0,
+		'stopSingle': false,
+		'stopDouble': false
+	},
+
+	initialize: function(options) {
+		this.handlerOptions = OpenLayers.Util.extend(
+			{}, this.defaultHandlerOptions
+		);
+		OpenLayers.Control.prototype.initialize.apply(
+			this, arguments
+		); 
+		this.handler = new OpenLayers.Handler.Click(
+			this, {
+				'dblclick': this.trigger
+			}, this.handlerOptions
+		);
+	}, 
+
+	trigger: function(e) {
+		alert("x");
+		var lonlat = maps.track.map.getLonLatFromViewPortPx(e.xy);
+		lonlat.transform(
+			new OpenLayers.Projection("EPSG:900913"), // to Spherical Mercator Projection
+			new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
+		);
+		url = "http://"+ window.location.host +window.location.pathname;
+		url = url + "?lat="+ lonlat.lat + "&lon=" + lonlat.lon;
+	
+		// hide map now
+		//maps.track.hide();              
+		status_msg("find nearest track point..");
+		
+		jQuery.getJSON( "/view/get_nearest_px/"+river.id+"/?lat="+lonlat.lat+"&lon="+lonlat.lon ,
+			function(data) {
+				px = data[0][1];
+				status_msg("jumping to new location.");
+				river.jumpTo(px);
+				
+			});					
+		//window.location.href = url
+	}
+});
+
+river.labels.show = function () {
+	river.labels.layer.display(true);
+}
+
+river.labels.hide = function () {
+	river.labels.layer.display(false);
+}
+
+river.labels.add = function() {
+
+	var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+	renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+	
+    var stylemap = new OpenLayers.StyleMap({'default':{
+                    strokeColor: "#EEEEEE",
+                    strokeOpacity: 0,
+                    strokeWidth: 2,
+                    fillColor: "#D0D0D0",
+                    fillOpacity: 0,
+                    pointRadius: 4,
+                    pointerEvents: "painted",
+                    // label with \n linebreaks
+					label : "${name}",
+					fontColor: "white",
+                    fontSize: "12px",
+                    fontFamily: "Georgia, Times, serif",
+                    fontWeight: "bold",
+                    labelAlign: "cm",
+                    labelXOffset: "10",
+                    labelYOffset: "0"
+                }
+    });
+
+	stylemap.styles['default'].addRules([
+            new OpenLayers.Rule({
+                minScaleDenominator: 5039716608,
+                symbolizer: {fontSize: "7px",fontWeight: "normal",fontFamily: "Georgia, Times, serif",}
+            }),
+            new OpenLayers.Rule({
+                elseFilter: true
+            })
+        ]);
+        
+	river.labels.layer = new OpenLayers.Layer.Vector(
+		"GML", {
+			strategies: [new OpenLayers.Strategy.Fixed()],
+			protocol: new OpenLayers.Protocol.HTTP({
+				url:  "/view/labels/" + river.id + "/",
+				format: new OpenLayers.Format.GeoJSON()
+            
+			}),
+         styleMap: stylemap 
+     });
+     river.view.addLayer(river.labels.layer);     
+}
+
 
 river.init = function(rec_data) {
 	rec_data.bounds = [0, -rec_data.height, rec_data.width, 0];
@@ -311,11 +431,14 @@ river.init = function(rec_data) {
 		});
 
     river.view.addLayer(layer);
+    river.labels.add();
+    //river.labels.hide();
     
 	river.view.zoomToExtent( new OpenLayers.Bounds( 0.0, -river.height, getWindowWidth(), 0.0), false );
 
 	if (river.offset == 0)
 		river.offset = rec_data.offset;
+	river.global_offset = rec_data.offset;
 	river.view.panTo( new OpenLayers.LonLat(river.offset, -river.height/2) );
 	
 	// controls
@@ -323,12 +446,17 @@ river.init = function(rec_data) {
 
 	// enable autopan
 	if (river.autopan) {		
-		river.autopanTimer = window.setInterval('river.doPan()', 50);
+		river.autopanTimer = window.setInterval('river.doPan()', river.pan_interval);
 	}
 	river.initControlButtons();
 
+
+
+
 	if (!debug) {
 		$("#debug").hide();
+		if (showmousepos)
+			river.view.addControl(new OpenLayers.Control.MousePosition());
 	}
 	else {
 		$("#debug").show();
@@ -350,6 +478,12 @@ river.init = function(rec_data) {
 	}
 	$("#ol_map").hide();
 }
+
+river.getTrackList = function() {
+	$("#track_list").hide();
+	$("#track_list_data").load( "/view/tracklist");
+}
+
 
 /*
 river.updatePositionViaLineString = function() {
@@ -469,12 +603,14 @@ river.updatePositionViaPoints = function() {
 		l_x =  Math.max(Math.round(river.view.getExtent().toArray()[0]),0);
 		r_x =  Math.round(river.view.getExtent().toArray()[2]);
 
-		if (r_x > river.gps.buffer.max_px && r_x <= river.length)
+		if (r_x > river.gps.buffer.max_px && r_x < river.length) {
 			river.getPoints();
-		else if(l_x < river.gps.buffer.min_px && l_x > 0)
+		}
+		else if(l_x < river.gps.buffer.min_px && l_x > 0) {			
 			river.getPoints();
+		}
 
-		if(river.gps.current.max_px == 0 || river.gps.current.max_px <= r_x) {	
+		if(river.gps.current.max_px == 0 || river.gps.current.max_px < r_x) {	
 			i = river.gps.current.max_id;	
 			while ( river.gps.current.max_px < r_x && i < river.gps.buffer.points_data.length) {
 				river.gps.current.max_px = river.gps.buffer.points_data[i][0];
@@ -573,12 +709,18 @@ river.getemptyTileURL = function(bounds) {
 
 river.doPan = function() {				
 	var x = Math.round(river.view.getCenter().lon);
-	var l = Math.max(Math.round(river.view.getExtent().toArray()[0]),1);
+	var r = Math.max(Math.round(river.view.getExtent().toArray()[2]),1);
 
-	if ( x >= river.length - 2* river.length / river.height)
-		river.view.panTo( new OpenLayers.LonLat(0, -river.height/2) );
-	else
-		river.view.pan(river.stepsize, 0);				
+	if ( x >= river.length - (getWindowWidth()/2 / river.view.getResolution()) ) {
+		river.jumpTo(river.global_offset);
+	} else
+		river.view.pan(river.stepsize, 0);
+
+	count = count + river.stepsize;
+	if (count >= getWindowWidth()/2) {
+		river.labels.layer.redraw();
+		count = 0;
+	}
 }
 
 river.jumpTo = function(x) {
@@ -597,6 +739,7 @@ river.jumpTo = function(x) {
 	river.gps.current.max_id = 0;
 
 	river.view.panTo( new OpenLayers.LonLat(x, -river.height/2) );
+	river.labels.layer.redraw();
 	$(".geoinfo").hide();
 	river.getPoints();
 }
@@ -605,14 +748,15 @@ river.initControlButtons = function ()
 {
 	// button actions
     if(gps) {
-		$("#map_button").toggle(
+		$("#map_button").click(
 		function(){
-			$("#ol_map").show();
-			$("#map_button").html("hide map");
-		}
-		, function() {
-			$("#ol_map").hide();
-			$("#map_button").html("show map");
+			if($("#ol_map").is(':visible')) {
+				maps.detail.hide();
+			} else {
+				maps.track.hide();
+				$("#track_list").hide();
+				maps.detail.show();
+			}
 		});
 
 		$("#show_track").click(function() {
@@ -620,6 +764,9 @@ river.initControlButtons = function ()
 				maps.track.hide();
 			} else {
 				maps.track.show();
+				$("#track_list").hide();
+				maps.detail.hide();
+				maps.track.map.zoomToExtent(maps.track.track.geometry.getBounds());
 			}
 		});
 		$("#close_track").click(function() {
@@ -647,7 +794,7 @@ river.initControlButtons = function ()
 				$("#play").addClass("paused");
 			} else {
 				river.autopan=1;
-				river.autopanTimer = window.setInterval('river.doPan()', 50);
+				river.autopanTimer = window.setInterval('river.doPan()', river.pan_interval);
 				if (gps)
 					river.positionTimer = window.setInterval('river.updatePosition()', maps.update_cyle);
 				$("#play").removeClass("paused");
@@ -659,20 +806,22 @@ river.initControlButtons = function ()
 		function(){
 			window.clearInterval(river.autopanTimer);
 			river.autopanTimer = 0;
-			river.view.pan(500,0);
+			river.view.pan(river.ffstep,0);
 			river.updatePosition();
+			river.labels.layer.redraw();
 			if (river.autopan)
-				river.autopanTimer = window.setInterval('river.doPan()', 50);
+				river.autopanTimer = window.setInterval('river.doPan()', river.pan_interval);
 	});
 
 	$("#back").click(
 		function(){
 			window.clearInterval(river.autopanTimer);
 			river.autopanTimer = 0;
-			river.view.pan(-500,0);
+			river.view.pan(-river.ffstep,0);
 			river.updatePosition();
+			river.labels.layer.redraw();
 			if (river.autopan)
-				river.autopanTimer = window.setInterval('river.doPan()', 50);
+				river.autopanTimer = window.setInterval('river.doPan()', river.pan_interval);
 	});
 
 	$("#faster").click(
@@ -686,20 +835,52 @@ river.initControlButtons = function ()
 	$("#zoomin").click(
 		function(){			
 			river.view.zoomIn();
-			if (river.view.getExtent().toArray()[0] < 0)
+			if (river.view.getExtent().toArray()[0] < 0) 
 				jumpTo(river.offset);
 			river.updatePosition();
+			river.labels.layer.redraw();
+			
 	});
 	$("#zoomout").click(
 		function(){
 			if (river.view.getResolution() < 16) {
 				river.view.zoomOut();
 				river.updatePosition();
+				river.labels.layer.redraw();
 			}
-	});
+		}
+	);
+
+
+	$("#show_all").click(
+		function(){
+			if($("#track_list").is(':visible')) {
+				$("#track_list").hide();
+			} else {
+				$("#track_list").show();
+				maps.track.hide();
+				maps.detail.hide();
+			}
+			
+		}
+	);
+
+	$("#track_list_close").click(
+		function(){
+			$("#track_list").hide();
+		}
+	);		
 
 	$("#log_left .alt").hide();
 	$("#log_left .spd").hide();
+
+	$("#river").click(
+		function(){
+			maps.track.hide();
+			maps.detail.hide();
+			$("#track_list").hide();
+		}
+	);
 										
 }
 

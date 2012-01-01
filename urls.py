@@ -5,6 +5,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+	(r'^list/', 'riverstudies.riverview.views.list'),
 	(r'^$','riverstudies.riverview.views.index'),
 
 	(r'^view/', include('riverstudies.riverview.urls')),

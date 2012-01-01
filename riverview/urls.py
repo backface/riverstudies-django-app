@@ -6,6 +6,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 	(r'^$','riverstudies.riverview.views.view'),
+
+	(r'^tracklist$',
+		'riverstudies.riverview.views.list_fragment'),	
 	
 	(r'^(?P<id>\d+)/$',
 		'riverstudies.riverview.views.view'),
@@ -22,17 +25,23 @@ urlpatterns = patterns('',
 	(r'^get_trackpoints/(?P<id>\d+)/(?P<start>\d+)/(?P<stop>\d+)/$',
 		'riverstudies.riverview.views.get_trackpointsInSegment'),
 
-	(r'^get_meta/(?P<id>\d+)/$',
-		'riverstudies.riverview.views.get_meta'),
+		
 		
 	(r'^get_nearest_px/(?P<id>\d+)/$',
 		'riverstudies.riverview.views.get_nearest_px'),
-
-	(r'^(?P<name>\w+)/$',
-		'riverstudies.riverview.views.view_by_name'),
+	(r'^labels/(?P<id>\d+)/$',
+		'riverstudies.riverview.views.labels'),
+	(r'^get_meta/(?P<id>\d+)/$',
+		'riverstudies.riverview.views.get_meta'),
+	(r'^get_track/(?P<id>\d+)/$',
+		'riverstudies.riverview.views.get_track'),
 		
-	(r'^(?P<name>\w+)/(?P<offset>\d+)$',
+	(r'^(?P<name>\w+)/$',
 		'riverstudies.riverview.views.view_by_name'),		
+	(r'^(?P<name>\w+)/(?P<offset>\d+)$',
+		'riverstudies.riverview.views.view_by_name'),
+
+
 		
 	
 )

@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.db import connection
 from django.core import serializers
 from django.http import HttpResponse
-from riverview.models import Track, TrackPoint
+from riverview.models import Track, TrackPoint, Label
 import simplejson as json
 import datetime
 
@@ -19,14 +19,31 @@ class JsonResponse(HttpResponse):
 		super(JsonResponse, self).__init__(content=content, mimetype='application/json; charset=utf8')
 
 
-def index(request,id=6):
-    track = Track.objects.get(id=id)
-    offset = 0
-    return render_to_response('riverviews/riverviews.html', locals())
+def index(request,id=0):
+	if id == 0:
+		tracks = Track.objects.all().order_by('-id')
+		id = tracks[0].id
+
+	track = Track.objects.get(id=id)
+	offset = 0
+	return render_to_response('riverviews/riverviews.html', locals())
 
 
+def list(request):
+	tracks = Track.objects.all().order_by('-id')
+	last_river = ""
+	return render_to_response('riverviews/riverlist.html', locals())
 
-def view(request,id=6,offset=0):
+def list_fragment(request):
+	tracks = Track.objects.all().order_by('-id')
+	last_river = ""
+	return render_to_response('riverviews/tracklist_fragment.html', locals())
+
+def view(request,id=0,offset=0):
+
+	if id == 0:
+		tracks = Track.objects.all().order_by('-id')
+		id = tracks[0].id
 
 	# if lat/lon is given find nearest track,trackpoint and offset first
 	if request.GET.__contains__('lat') and request.GET.__contains__('lon'):
@@ -157,5 +174,14 @@ def get_nearest_px(request,id=6):
 	track_segment = cursor.fetchall()
 	response = HttpResponse(JSONEncoder().encode(track_segment),mimetype="application/json")
 		
+	return response
+
+def labels(request,id=0):
+	from vectorformats.Formats import Django, GeoJSON
+	qs = Label.objects.filter(track=id)
+	djf = Django.Django(geodjango="geom", properties=['name', 'desc'])
+	geoj = GeoJSON.GeoJSON()
+	s = geoj.encode(djf.decode(qs))
+	response = HttpResponse(s,mimetype="application/json")
 	return response
 	
