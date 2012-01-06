@@ -35,7 +35,7 @@ def list(request):
 	return render_to_response('riverviews/riverlist.html', locals())
 
 def list_fragment(request):
-	tracks = Track.objects.all().order_by('-id')
+	tracks = Track.objects.all().order_by('-river__id','-id')
 	last_river = ""
 	return render_to_response('riverviews/tracklist_fragment.html', locals())
 

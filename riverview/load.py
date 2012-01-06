@@ -16,8 +16,8 @@ import re
 
 # for importing trackfile
 ######################
-in_file = "/data/projects/slitscan/malisca/tile-data/2011-12-13--varanasi-deshaked/track.log.csv"
-gpx_file = "/data/projects/river-studies/web-data/2011-12-13--varanasi/track2.gpx"
+in_file = "/data/projects/slitscan/malisca/tile-data/2011-07-12--donaukanal/track.log.csv"
+########################################################
 name="Varansi (deshaked)"
 camera="Elphel NCL353L"
 tile_width = 2592
@@ -29,13 +29,67 @@ data_path = "/media/data/2011-12-13--varanasi"
 river_id=3
 delimiter=";"
 ###############################
-
+in_file = "/data/projects/river-studies/web-data/2011-12-16--chunar-banares/track.log.csv"
+######################################
+name="Chunar - Banares"
+camera="Elphel NCL353L"
+import_offset = 0;
+tile_width = 2592
+tile_offset = 0
+MaxResolution = 4096.0
+zoomlevels = 13
+total_width = 1016064
+data_path = "/media/data/2011-12-16--chunar-banares"
+river_id=3
+import_offset = 69984;
+trackPointsOnly=False
+######################################
+if False:
+	in_file = "/data/projects/river-studies/web-data/2011-07-12--donaukanal/track.log.csv"
+	name="Vienna Danube canal"
+	camera="Elphel NCL353L"
+	import_offset = 0;
+	tile_width = 2592
+	tile_offset = 0
+	MaxResolution = 8192.0
+	zoomlevels = 13
+	total_width = 1666152
+	data_path = "/media/data/2011-07-12--donaukanal"
+	river_id=1
+	trackPointsOnly=False
+if False:
+	in_file = "/data/projects/river-studies/web-data/2011-06-17--linz-krems/track.log.csv"
+	name="Linz - Krems"
+	camera="Elphel NCL353L"
+	import_offset = 10280;
+	tile_width = 1296
+	tile_offset = 0
+	MaxResolution = 8192.0
+	zoomlevels = 13
+	total_width = 2060640
+	data_path = "/media/data/2011-06-17--linz-krems"
+	river_id=1
+	trackPointsOnly=False	
+if False:
+	in_file = "/data/projects/river-studies/web-data/2006-12-26--cairo/track.log.csv"
+	name="Cairo"
+	camera="Sony DCR-PC100E"
+	import_offset = 0;
+	tile_width = 720
+	tile_offset = 0
+	MaxResolution = 512.0
+	zoomlevels = 9
+	total_width = 72720
+	data_path = "/media/data/2006-12-26--cairo"
+	river_id=2
+	trackPointsOnly=False	
 # for importing labels
 ######################
-track_id = 22
+track_id = 24
+gpx_file = ""
 
 
-def loadTrackFromFile(in_file=in_file,verbose=True,trackPointsOnly=False):
+def loadTrackFromFile(in_file=in_file,track_id=track_id,verbose=True,trackPointsOnly=trackPointsOnly):
 	
 	infile = os.path.abspath(os.path.join(os.path.dirname(__file__), in_file))
 	ext = os.path.basename(infile)[-3:]
@@ -81,14 +135,14 @@ def loadTrackFromFile(in_file=in_file,verbose=True,trackPointsOnly=False):
 			brg = row[col_brg]
 
 			if ext == "log":
-				pxx = int(row[col_px])
-				px = i * tile_width + pxx
-				if pxx > tile_width-30:
-					i += 1;
+				pxx = int(row[col_px]) - import_offset
+				#px = i * tile_width + pxx
+				#if pxx > tile_width-30:
+				#	i += 1;
 				hasFirst = True
 			else:
 				if i > 0: #ignore first line
-					pxx = int(row[col_px])
+					pxx = int(row[col_px]) - import_offset
 					px = pxx;
 					#px = (pxx - tile_offset) * tile_width
 					hasFirst = True
@@ -103,51 +157,85 @@ def loadTrackFromFile(in_file=in_file,verbose=True,trackPointsOnly=False):
 					data_path=data_path, height=tile_width  )
 				track.save()
 				trackSaved = True
+				track_id = track.id
 
 			if hasFirst:
 				t = time.strftime("%Y-%m-%d %H:%M:%S",time.strptime(utc.strip(),"%Y-%m-%dT%H:%M:%S.%fZ"))
 				pnt = Point(float(lon), float(lat))
 				if len(points) > 0:
 					if not pnt == points[len(points)-1]:				
-						trackpoint = TrackPoint(track_id=track.id,px=px, time=t, geom=pnt, speed=spd, altitude=alt, heading=brg)
+						trackpoint = TrackPoint(track_id=track_id,px=px, time=t, geom=pnt, speed=spd, altitude=alt, heading=brg)
 						trackpoint.save()
 						points.append(pnt)
 					else:
 						print "discard duplicate gps fix"
 				else:
-					trackpoint = TrackPoint(track_id=track.id,px=px, time=t, geom=pnt, speed=spd, altitude=alt, heading=brg)
+					trackpoint = TrackPoint(track_id=track_id,px=px, time=t, geom=pnt, speed=spd, altitude=alt, heading=brg)
 					trackpoint.save()
 					points.append(pnt)
 		else:
 			print "discard non-valid gps log for at %s, fix: %s" % (row[1],row[2])
 
+	linestring = LineString(points)
+
 	if not trackPointsOnly:
-		linestring = LineString(points)
 		track.geom=linestring
 		track.save()
 		length = Track.objects.length().get(id=track.id).length.km
 		track.length=length
-		track.save()
-	
-	print "importe %s trackpoints, total length: %s " % (len(points),linestring.length)
+		track.save()	
+
+	print "imported %s trackpoints, total length: %s " % (len(points),length)
 	
 
 # Not yet working!!!!
-def loadTrackPointsFromGPX(gpx_file=gpx_file,verbose=True):
+def loadTrackFromGPX(gpx_file=gpx_file,trackPointsOnly=False,verbose=True):
 	infile = os.path.abspath(os.path.join(os.path.dirname(__file__), gpx_file))
 	name = os.path.basename(gpx_file)[:-4]
 	dataSource = DataSource(infile)
 	layer = dataSource[4]
-	print layer
-	print dataSource[0]
-	print layer
 	times = layer.get_fields('time')
 	trackpoints = layer.get_geoms()
+	#print layer.get_fields('time')
+
+	t = layer.get_fields('time')[0]
+	if not trackPointsOnly:
+		track = Track(name=name, time=t, river_id=river_id, title=name, camera=camera,
+			offset=tile_offset, width=total_width, maxResolution=MaxResolution, numZoomLevels=zoomlevels,
+			data_path=data_path, height=tile_width )
+		track.save();
+		track_id = track.id
+						
 	i = 0
+	points = []
+	
 	for trackpoint in trackpoints:
-		print trackpoint.geos, layer.get_fields('time')[i], layer.get_fields('ele')[i],  layer.get_fields('speed')[i],  layer.get_fields('fix')[i]
+		#print  trackpoint.geos, layer.get_fields('time')[i], layer.get_fields('ele')[i],  layer.get_fields('speed')[i],  #layer.get_fields('fix'), layer.get_fields('cmt')[i]
+		#i += 1
+		
+		trackpoint = TrackPoint(track_id=track.id,
+			px= layer.get_fields('cmt')[i] - import_offset,
+			time=layer.get_fields('time')[i],
+			geom=trackpoint.geos,
+			speed=layer.get_fields('speed')[i],
+			altitude=layer.get_fields('ele')[i],
+			heading=layer.get_fields('')[i],
+		)
+		trackpoint.save()
+		print  layer.get_fields('time')[i]
 		i += 1
-		#trackpoint = TrackPoint(track_id=13,px=px, time=t, geom=pnt, speed=spd, altitude=alt, heading=brg)
+
+	points.append(trackpoint.geos)
+	linestring = LineString(points)
+
+	track.geom=linestring
+	track.save()
+	length = Track.objects.length().get(id=track.id).length.km
+	track.length=length
+	track.save()
+
+	print "imported %s trackpoints, total length: %s " % (len(points),linestring.length)
+
 
 def loadLabelsFromFile(in_file,track_id=track_id):
 	

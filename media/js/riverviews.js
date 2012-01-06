@@ -369,7 +369,7 @@ river.labels.add = function() {
 					fontColor: "white",
                     fontSize: "12px",
                     fontFamily: "Georgia, Times, serif",
-                    fontWeight: "bold",
+                    fontWeight: "normal",
                     labelAlign: "cm",
                     labelXOffset: "10",
                     labelYOffset: "0"
