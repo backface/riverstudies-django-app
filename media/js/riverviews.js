@@ -25,6 +25,7 @@ river.ffstep = 500.0;
 
 river.labels = {}
 river.labels.layer = null;
+river.labels.visible = true;
 
 river.gps = {};
 river.gps.buffer = {}
@@ -396,10 +397,12 @@ river.controlClick = OpenLayers.Class(OpenLayers.Control, {
 });
 
 river.labels.show = function () {
+	river.labels.visible = true;
 	river.labels.layer.display(true);
 }
 
 river.labels.hide = function () {
+	river.labels.visible = false;
 	river.labels.layer.display(false);
 }
 
@@ -448,7 +451,8 @@ river.labels.add = function() {
 			}),
          styleMap: stylemap 
      });
-     river.view.addLayer(river.labels.layer);     
+     river.view.addLayer(river.labels.layer);
+     river.labels.visible = true;    
 }
 
 
@@ -806,8 +810,7 @@ river.initControlButtons = function ()
 			if($("#ol_map").is(':visible')) {
 				maps.detail.hide();
 			} else {
-				maps.track.hide();
-				$("#track_list").hide();
+				hideWindows();
 				maps.detail.show();
 			}
 		});
@@ -815,10 +818,9 @@ river.initControlButtons = function ()
 		$("#show_track").click(function() {
 			if($("#track_map").is(':visible') ) {
 				maps.track.hide();
-			} else {
+			} else {				
+				hideWindows();
 				maps.track.show();
-				$("#track_list").hide();
-				maps.detail.hide();
 				maps.track.map.zoomToExtent(maps.track.track.geometry.getBounds());
 			}
 		});
@@ -910,9 +912,8 @@ river.initControlButtons = function ()
 			if($("#track_list").is(':visible')) {
 				$("#track_list").hide();
 			} else {
+				hideWindows();
 				$("#track_list").show();
-				maps.track.hide();
-				maps.detail.hide();
 			}
 			
 		}
@@ -929,12 +930,42 @@ river.initControlButtons = function ()
 
 	$("#river").click(
 		function(){
-			maps.track.hide();
-			maps.detail.hide();
-			$("#track_list").hide();
+			hideWindows();
 		}
 	);
+
+	$("#about, #show_about").click(
+			function () {
+			if( $("#about").is(':visible')) {
+				$("#about").hide();
+			} else {
+				hideWindows();
+				$("#about").show();
+			}
+		}
+	);
+
+	if (river.labels.visible) $("#show_labels").html("Hide Labels");
+	$("#show_labels").click(
+		function () {
+			if (river.labels.visible == false) {
+				river.labels.show();
+				$("#show_labels").html("Hide Labels");
+			} else {
+				river.labels.hide();
+				$("#show_labels").html("Show Labels");
+			}
+		}
+		
+	);	
 										
+}
+
+function hideWindows() {
+	maps.track.hide();
+	maps.detail.hide();
+	$("#track_list").hide();
+	$("#about").hide();
 }
 
 /*

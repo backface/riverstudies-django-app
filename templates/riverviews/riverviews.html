@@ -11,14 +11,21 @@
 	  
 	<body onload='river.load({{track.id}},{{offset}})'>
 
-		<div id="headinfo">River Studies | river view player 2.0 (Alpha) <span id="show_all">Show All Tracks</span></div>
+		<div id="headinfo" class="toplink">
+			River Studies | river view player 2.0 (Alpha)
+			<span id="show_all">
+			<a href="#">Show All Tracks</a>  
+			</span> / <a id="show_about" href="#">About</a> /
+			</div>
 		<div id="titlefield">
-			<span id="title"></span> 
+			{{track.river.name}}: <span id="title"></span> 
 		</div>
-		<div id="side_right"><a href="#">About</a> <a href="#">Contact</a> </div>
+		<div id="side_right" class="toplink" >
+			<a id="show_labels" href="#">Show Labels</a>
+		</div>
 		
 		<div id="info" class="overlay">
-			RIVER: <span class="overlay">{{track.river.name}}</span><br />
+			<!--RIVER: <span class="overlay">{{track.river.name}}</span><br />-->
 				
 			{% if track.camera %}
 				CAMERA: <span class="overlay">{{track.camera}}</span><br />
@@ -89,13 +96,23 @@
 
 		 
 		<div id="debug" class="overlay logs"></div>
-		<div id="track_list" class="">
+		<div id="track_list" class="window">
 			<div id="track_list_head" class="window_head">
 				<div id="track_list_title" class="window_title">list of recorded river tracks</div>
 				<div id="track_list_close" class="button window_close">x</div>
 			</div>
 			<div id="track_list_data"></div>
 		</div>
+
+		<div id="about" class="window">
+			<div id="about_head" class="window_head">
+				<div id="about_title" class="window_title">ABOUT</div>
+				<div id="about_close" class="button window_close">x</div>
+			</div>
+			<div id="about_content">
+				<h3>River Studies</h3>
+			</div>
+		</div>		
 		
 		<script type="text/javascript" >resize()</script>
 

@@ -22,13 +22,14 @@ a:hover {color:#fff}
 }
 .OlControlPanZoom {opacity : 0.8;filter: alpha(opacity=80);}
 
-#track_map {
+#track_map {z-index:4012}
+#track_map_head {position:absolute;top:-18px;left:-1px;padding-right:-1px;display:none}
+
+#track_map, #about  {
 	position:absolute; bottom:25%; left:25%;width:50%; height:50%;
 	border: 1px solid #000;z-index:4012;
 	opacity : 0.8;filter: alpha(opacity=80);
 }
-#track_map_head {position:absolute;top:-18px;left:-1px;padding-right:-1px;display:none}
-
 .window_head {
 		text-transform:uppercase;z-index:2020;
 		background:#333;
@@ -39,6 +40,8 @@ a:hover {color:#fff}
 	font-size:10px;text-transform:uppercase;font-weight:bold;
 	background:#333; color:#fff; float:left;}
 .window_close {float:right;border:0px;position:relative;top:-1px;left:1px;}
+#about_content  {padding:10px}
+#about {display:none;background:#222;} 
 
 
 #track_list {
@@ -48,7 +51,7 @@ a:hover {color:#fff}
 	display:none;
 }
 
-#track_list_data {font-size:14px;font-family: Georgia;overflow:auto;
+#track_list_data, #about_content {font-size:14px;font-family: Georgia;overflow:auto;
 	color:#d0d0d0;padding-top:40px;}
 #track_list_data a, #track_list_data a:visited { color:#eee}
 #track_list_data a:hover {color:#fff}
@@ -57,8 +60,6 @@ a:hover {color:#fff}
 #track_list_data .trackname {padding-right:20px}
 #track_list_data .trackyear {padding-right:20px;}
 #track_list_data .tracklength{text-align:right;padding-right:20px;}
-#show_all {text-decoration:underline}
-#show_all:hover {cursor:pointer;color:#ffffff}
 #track_list_data p {margin-top:20px;font-size:11px;font-style:italic}
 
 #headinfo, #footer {
@@ -72,6 +73,10 @@ a:hover {color:#fff}
 	background-color:#000;
 	padding-top:4px;padding-bottom:0px;
 }
+#side_right {position:absolute;top:0px;right:10px;z-index:6000;padding-top:4px;padding-bottom:0px;}
+#side_right a {margin-left:15px;color:#a0a0a0;}
+#side_right a:hover {color:#000000;}
+
 #footer {
 	position: absolute;left:0px;bottom:0px;
 	height:16px; width:100%;
@@ -130,7 +135,10 @@ a:hover {color:#fff}
 #footer a{color:#eeeeee;text-decoration:underline}
 #footer a:hover{color:#ffffff;text-decoration:underline}
 #status_msg {position:absolute;bottom:2px;right:10px;color:#c0c0c0;z-index:6000;}
-#side_right {position:absolute;top:2px;right:10px;color:#c0c0c0;z-index:6000;}
+
+
+.toplink a {padding:0px 2px 0px 2px}
+.toplink a:hover {background:#c0c0c0;color:#000000;text-decoration:none}
 
 #msg {position:absolute;top:30%;width:100%;text-align:center;z-index:2000;font-size:34px;
 opacity: 0.8;filter: alpha(opacity=80);	}
