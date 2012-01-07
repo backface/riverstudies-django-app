@@ -28,6 +28,8 @@
 			{% endif %}
 			{% if track.length %}
 				LENGTH: <span class="overlay">{{track.length|floatformat}} km</span><br />
+			{% else %}
+				<span class="overlay">NO GPS DATA AVAILABLE!</span><br />
 			{% endif %}			
 			{% if track.desc %}
 				DESCRIPTION: <span class="overlay">{{track.desc}}</span><br />

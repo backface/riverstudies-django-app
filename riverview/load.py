@@ -16,54 +16,67 @@ import re
 
 # for importing trackfile
 ######################
-in_file = "/data/projects/slitscan/malisca/tile-data/2011-07-12--donaukanal/track.log.csv"
+track_id = 0
+gpx_file = ""
 ########################################################
-name="Varansi (deshaked)"
-camera="Elphel NCL353L"
-tile_width = 2592
-tile_offset = 6000
-MaxResolution = 2048.0
-zoomlevels = 11
-total_width = 311040
-data_path = "/media/data/2011-12-13--varanasi"
-river_id=3
-delimiter=";"
-###############################
-in_file = "/data/projects/river-studies/web-data/2011-12-16--chunar-banares/track.log.csv"
-######################################
-name="Chunar - Banares"
-camera="Elphel NCL353L"
-import_offset = 0;
-tile_width = 2592
-tile_offset = 0
-MaxResolution = 4096.0
-zoomlevels = 13
-total_width = 1016064
-data_path = "/media/data/2011-12-16--chunar-banares"
-river_id=3
-import_offset = 69984;
-trackPointsOnly=False
-######################################
 if False:
-	in_file = "/data/projects/river-studies/web-data/2011-07-12--donaukanal/track.log.csv"
-	name="Vienna Danube canal"
+	in_file = "/data/projects/river-studies/web-data/2011-12-13--varanasi/track.log.csv"
+	name="Varansi (deshaked)"
+	camera="Elphel NCL353L"
+	tile_width = 2592
+	tile_offset = 6000
+	MaxResolution = 2048.0
+	zoomlevels = 11
+	total_width = 311040
+	data_path = "/media/data/2011-12-13--varanasi"
+	river_id=3
+	delimiter=";"
+if False:
+	in_file = "/data/projects/river-studies/web-data/2011-12-13--varanasi-east/track.log.csv"
+	name="Varansi (East)"
+	camera="Elphel NCL353L"
+	tile_width = 2592
+	tile_offset = 6000
+	MaxResolution = 2048.0
+	zoomlevels = 12
+	total_width = 282528
+	data_path = "/media/data/2011-12-13--varanasi-east"
+	river_id=3
+	delimiter=";"	
+if False:
+	in_file = "/data/projects/river-studies/web-data/2011-12-16--chunar-banares/track.log.csv"
+	name="Chunar - Banares"
 	camera="Elphel NCL353L"
 	import_offset = 0;
 	tile_width = 2592
 	tile_offset = 0
+	MaxResolution = 4096.0
+	zoomlevels = 13
+	total_width = 1016064
+	data_path = "/media/data/2011-12-16--chunar-banares"
+	river_id=3
+	import_offset = 69984;
+	trackPointsOnly=False
+if False:
+	in_file = "/data/projects/river-studies/web-data/2011-07-12--donaukanal/track.log.csv"
+	name="Vienna Danube Canal"
+	camera="Elphel NCL353L"
+	import_offset = 0;
+	tile_width = 2592
+	tile_offset = 4500
 	MaxResolution = 8192.0
 	zoomlevels = 13
 	total_width = 1666152
 	data_path = "/media/data/2011-07-12--donaukanal"
 	river_id=1
 	trackPointsOnly=False
-if False:
-	in_file = "/data/projects/river-studies/web-data/2011-06-17--linz-krems/track.log.csv"
+if True:
+	in_file = "/data/projects/river-studies/web-data/2011-06-17--linz-krems/track2.log.csv"
 	name="Linz - Krems"
 	camera="Elphel NCL353L"
-	import_offset = 10280;
+	import_offset = 10368;
 	tile_width = 1296
-	tile_offset = 0
+	tile_offset = 4500
 	MaxResolution = 8192.0
 	zoomlevels = 13
 	total_width = 2060640
@@ -82,11 +95,9 @@ if False:
 	total_width = 72720
 	data_path = "/media/data/2006-12-26--cairo"
 	river_id=2
-	trackPointsOnly=False	
-# for importing labels
-######################
-track_id = 24
-gpx_file = ""
+	trackPointsOnly=False
+	
+
 
 
 def loadTrackFromFile(in_file=in_file,track_id=track_id,verbose=True,trackPointsOnly=trackPointsOnly):
@@ -135,10 +146,10 @@ def loadTrackFromFile(in_file=in_file,track_id=track_id,verbose=True,trackPoints
 			brg = row[col_brg]
 
 			if ext == "log":
-				pxx = int(row[col_px]) - import_offset
-				#px = i * tile_width + pxx
-				#if pxx > tile_width-30:
-				#	i += 1;
+				pxx = int(row[col_px])
+				px = i * tile_width + pxx
+				if pxx > tile_width-30:
+					i += 1;
 				hasFirst = True
 			else:
 				if i > 0: #ignore first line
@@ -180,6 +191,8 @@ def loadTrackFromFile(in_file=in_file,track_id=track_id,verbose=True,trackPoints
 
 	if not trackPointsOnly:
 		track.geom=linestring
+		if brg > 0:
+			track.direction = brg
 		track.save()
 		length = Track.objects.length().get(id=track.id).length.km
 		track.length=length

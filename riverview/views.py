@@ -35,7 +35,7 @@ def list(request):
 	return render_to_response('riverviews/riverlist.html', locals())
 
 def list_fragment(request):
-	tracks = Track.objects.all().order_by('-river__id','-id')
+	tracks = Track.objects.all().order_by('-river__id','-time')
 	last_river = ""
 	return render_to_response('riverviews/tracklist_fragment.html', locals())
 
@@ -138,7 +138,8 @@ def get_track(request,id):
 
 def get_meta(request,id):
 	track = Track.objects.get(id=id)
-	track.geom = track.geom.simplify(0.0001)
+	if track.geom != None:
+		track.geom = track.geom.simplify(0.0001)
 	response = HttpResponse()
 	serializers.serialize("json", [track], stream=response)
 	return response

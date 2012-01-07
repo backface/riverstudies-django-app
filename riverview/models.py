@@ -20,7 +20,7 @@ class Track(models.Model):
 	direction = models.FloatField(null=True,blank=True)
 	#tileWidth = models.IntegerField(null=True,blank=True)
 
-	geom = models.LineStringField(null=True)
+	geom = models.LineStringField(null=True,blank=True)
 	objects = models.GeoManager()
 	
 	class Meta:

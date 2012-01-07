@@ -1,9 +1,9 @@
 var gps=1;
 var debug=0;
-var showmousepos=1;
+var showmousepos=0;
 var info=1;
 var index=1;
-var label_edit=1;
+var label_edit=0;
 
 var river = {};
 river.view = null;
@@ -455,7 +455,11 @@ river.labels.add = function() {
 river.init = function(rec_data) {
 	rec_data.bounds = [0, -rec_data.height, rec_data.width, 0];
 	river.path = rec_data.data_path + "/";
-	
+
+	if (rec_data.geom == null) {
+		gps = 0;
+		status_msg("no gps data available");
+	}
 	var options = {
 		controls: [],
 		maxExtent: new OpenLayers.Bounds(
