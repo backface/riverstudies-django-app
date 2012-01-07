@@ -17,6 +17,7 @@ class Track(models.Model):
 	offset = models.IntegerField(null=True,blank=True)
 	maxResolution = models.FloatField(null=True,blank=True)
 	numZoomLevels = models.FloatField(null=True,blank=True)
+	direction = models.FloatField(null=True,blank=True)
 	#tileWidth = models.IntegerField(null=True,blank=True)
 
 	geom = models.LineStringField(null=True)

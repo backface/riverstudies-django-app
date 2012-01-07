@@ -126,7 +126,7 @@ maps.track.controlClick = OpenLayers.Class(OpenLayers.Control, {
 });
 
 
-maps.track.init = function (tr) {
+maps.track.init = function (tr,dir) {
 	          	
 	track = OpenLayers.Geometry.fromWKT(tr);
 	maps.track.map = new OpenLayers.Map("track_map", {controls:[]});
@@ -147,6 +147,35 @@ maps.track.init = function (tr) {
         });  
   
 	maps.track.layers.vector.addFeatures(maps.track.track);
+
+	maps.track.layers.direction = new OpenLayers.Layer.Vector(
+                "Simple Geometry",
+                {
+                    styleMap: new OpenLayers.StyleMap({
+                        "default": {
+                            externalGraphic: "/media/img/directionb.png",
+                            graphicHeight: 24,
+                            graphicYOffset: -12,
+                            rotation: "${angle}",
+                            fillOpacity: "1.0"
+                        }
+                    })
+                }
+            );
+    
+
+	points = track.getVertices();
+	pt = points[points.length-1];
+
+	 feature = 
+		new OpenLayers.Feature.Vector(
+			pt,
+				 {angle: dir, opacity:1.0}
+			);
+	maps.track.layers.direction.addFeatures(feature)
+	maps.track.map.addLayer(maps.track.layers.direction);
+
+
 	maps.track.map.zoomToExtent(maps.track.track.geometry.getBounds());
 
 	OpenLayers.Control.Click = maps.track.controlClick;  
@@ -188,12 +217,30 @@ maps.track.show = function() {
 
 maps.detail.init = function (lat,lon) {
 	maps.detail.map = new OpenLayers.Map("ol_map");
+
 	maps.detail.layers.base = new OpenLayers.Layer.OSM();
 	maps.detail.map.addLayer(maps.detail.layers.base);
+
 	maps.detail.layers.vector = new OpenLayers.Layer.Vector("cur_track"); 
 	maps.detail.map.addLayer(maps.detail.layers.vector);
-	maps.detail.layers.markers = new OpenLayers.Layer.Markers( "Markers" );
-	maps.detail.map.addLayer(maps.detail.layers.markers);
+	
+	//maps.detail.layers.markers = new OpenLayers.Layer.Markers( "Markers" );	
+	maps.detail.layers.markers = new OpenLayers.Layer.Vector(
+                "Simple Geometry",
+                {
+                    styleMap: new OpenLayers.StyleMap({
+                        "default": {
+                            externalGraphic: "/media/img/direction.png",
+                            graphicHeight: 24,
+                            graphicYOffset: -12,
+                            rotation: "${angle}",
+                            fillOpacity: "1.0"
+                        }
+                    })
+                }
+            );
+	maps.detail.map.addLayer(maps.detail.layers.markers);            
+
 	maps.detail.map.setCenter(new OpenLayers.LonLat(16,48.52), 15);	
 }
 
@@ -250,16 +297,21 @@ maps.detail.updateHeading = function (brg,lat,lon) {
 	var d =  Math.round( (parseFloat(brg) / 360.0) * 40) * 3;
 	var size = new OpenLayers.Size(24,24);
 	var offset = new OpenLayers.Pixel(-(size.w/2), -size.h/2);
-	
-	var icon = new OpenLayers.Icon('/media/img/mapfiles/dir_' + d + '.png', size, offset);
-	var marker = new OpenLayers.Marker(
-					new OpenLayers.LonLat(lon,lat).transform(
+	   
+	if (maps.detail.layers.markers) {
+		maps.detail.layers.markers.removeFeatures();
+		maps.detail.layers.markers.destroyFeatures();
+	}
+
+	feature = 
+		new OpenLayers.Feature.Vector(
+			new OpenLayers.Geometry.Point(lon,lat).transform(
 						new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
 						new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
-					), icon
-				);
-	maps.detail.layers.markers.clearMarkers();
-	maps.detail.layers.markers.addMarker(marker);
+					),
+				 {angle: brg, opacity:1.0}
+			);
+	maps.detail.layers.markers.addFeatures(feature);
 }
 
 maps.detail.hide = function() {
@@ -450,9 +502,6 @@ river.init = function(rec_data) {
 	}
 	river.initControlButtons();
 
-
-
-
 	if (!debug) {
 		$("#debug").hide();
 		if (showmousepos)
@@ -469,7 +518,7 @@ river.init = function(rec_data) {
 			river.positionTimer = window.setInterval('river.updatePosition()', 1000);			
 			// init real map and hide it
 			maps.detail.init(45.0,18.0);
-			maps.track.init(rec_data.geom);
+			maps.track.init(rec_data.geom,rec_data.direction);
 			maps.track.hide();
 			$(".geoinfo").hide();
 							
