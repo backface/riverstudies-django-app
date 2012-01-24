@@ -14,42 +14,13 @@
 			<span id="title">River Studies</span> 
 		</div>
 
-	{% if tracks %}
 
 	<div id="track_list_data">
 	
 	<center>
-	<br /><br />
-	<h2>List of recorded sessions</h2>
-	<br />
-	<table>
-		{% for track in tracks %}    
-		<tr>
-			<td class="rivername">
-				{% ifchanged %}
-					{{ track.river.name }}
-				{% endifchanged %}
-			</td>
-			<td class="trackname">
-				<a class="link" href="/view/{{ track.name }}">{{ track.title }}</a>
-			</td>		
-			<td class="tracklength">
-				{% if track.length %}
-					{{ track.length|floatformat }} km</a>
-				{% else %}
-					N/A
-				{% endif %}
-			</td>
-			<td class="trackyear">
-				{{ track.time|date:"Y"|upper }}
-			</td>			
-		</tr>
-		<!--{ last_river = track.river.name }-->
-
-		{% endfor %}
-	</table>
+	<h2>404 - File not found </h2>
 	</center>
-	{% endif %}
+
 	</div>
 
 		<div id="footer">
