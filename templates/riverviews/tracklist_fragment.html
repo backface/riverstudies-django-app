@@ -1,0 +1,33 @@
+
+	<center>
+	<table>
+		{% for track in tracks %}    
+		<tr>
+			<td class="rivername">
+				{% ifchanged %}
+					{{ track.river.name }}
+				{% endifchanged %}
+			</td>
+			<td class="trackname">
+				<a class="link" href="/view/{{track.id}}">{{ track.title }}</a>
+			</td>		
+			<td class="tracklength">
+				{% if track.length %}
+					{{ track.length|floatformat }} km</a>
+				{% else %}
+					N/A
+				{% endif %}
+			</td>
+			<td class="trackyear">
+				{{ track.time|date:"Y"|upper }}
+			</td>			
+		</tr>
+		<!--{ last_river = track.river.name }-->
+
+		{% endfor %}
+	</table>
+
+		<p><font size="smaller">
+			find more legacy footage at <a href="http://www.danubepanorama.net/dunAV-Player/">http://www.danubepanorama.net/dunAV-Player/</a></font>
+		</p>	
+	</center>
