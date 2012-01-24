@@ -30,7 +30,7 @@ def index(request,id=0):
 
 
 def list(request):
-	tracks = Track.objects.all().order_by('-id')
+	tracks = Track.objects.all().order_by('-river__id','-id')
 	last_river = ""
 	return render_to_response('riverviews/riverlist.html', locals())
 

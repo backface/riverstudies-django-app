@@ -8,7 +8,6 @@ from riverstudies import settings
 
 #example
 gpx_file = 'data/danube.gpx'
-gpx_file = '/data/projects/rivers-as-lines/satlisca/data/rivers/ganges.gpx'
 
 def loadRiverFromGPX(gpx_file,verbose=True):
 	infile = os.path.abspath(os.path.join(os.path.dirname(__file__), gpx_file))

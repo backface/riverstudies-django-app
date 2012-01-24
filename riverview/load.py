@@ -16,9 +16,22 @@ import re
 
 # for importing trackfile
 ######################
-track_id = 0
+track_id = 38
 gpx_file = ""
 ########################################################
+if False:
+	in_file = "/data/projects/river-studies/web-data/2012-01-08--guwahati-north/track.log.csv"
+	name="North Guwahati"
+	camera="Elphel NCL353L"
+	tile_width = 2592
+	tile_offset = 6000
+	import_offset = 33696
+	MaxResolution = 2048.0
+	zoomlevels = 11
+	total_width = 469152
+	data_path = "/media/data/2012-01-08--guwahati-north"
+	river_id=4
+	delimiter=";"
 if False:
 	in_file = "/data/projects/river-studies/web-data/2011-12-13--varanasi/track.log.csv"
 	name="Varansi (deshaked)"
@@ -82,7 +95,7 @@ if True:
 	total_width = 2060640
 	data_path = "/media/data/2011-06-17--linz-krems"
 	river_id=1
-	trackPointsOnly=False	
+	trackPointsOnly=True	
 if False:
 	in_file = "/data/projects/river-studies/web-data/2006-12-26--cairo/track.log.csv"
 	name="Cairo"
@@ -175,14 +188,14 @@ def loadTrackFromFile(in_file=in_file,track_id=track_id,verbose=True,trackPoints
 				pnt = Point(float(lon), float(lat))
 				if len(points) > 0:
 					if not pnt == points[len(points)-1]:				
-						trackpoint = TrackPoint(track_id=track_id,px=px, time=t, geom=pnt, speed=spd, altitude=alt, heading=brg)
-						trackpoint.save()
+					#	trackpoint = TrackPoint(track_id=track_id,px=px, time=t, geom=pnt, speed=spd, altitude=alt, heading=brg)
+					#	trackpoint.save()
 						points.append(pnt)
 					else:
 						print "discard duplicate gps fix"
 				else:
-					trackpoint = TrackPoint(track_id=track_id,px=px, time=t, geom=pnt, speed=spd, altitude=alt, heading=brg)
-					trackpoint.save()
+					#trackpoint = TrackPoint(track_id=track_id,px=px, time=t, geom=pnt, speed=spd, altitude=alt, heading=brg)
+					#trackpoint.save()
 					points.append(pnt)
 		else:
 			print "discard non-valid gps log for at %s, fix: %s" % (row[1],row[2])
@@ -196,7 +209,11 @@ def loadTrackFromFile(in_file=in_file,track_id=track_id,verbose=True,trackPoints
 		track.save()
 		length = Track.objects.length().get(id=track.id).length.km
 		track.length=length
-		track.save()	
+		track.save()
+
+	track = Track.objects.get(id=track_id)
+	track.geom=linestring
+	track.save()		
 
 	print "imported %s trackpoints, total length: %s " % (len(points),length)
 	

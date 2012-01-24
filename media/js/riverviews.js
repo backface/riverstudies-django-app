@@ -13,7 +13,7 @@ river.positionTimer = null;
 river.bounds = null;
 river.height = null;
 river.length = null;
-river.stepsize = 2.0;
+river.stepsize = 1.0;
 river.offset = 0;
 river.global_offset = 0;
 river.id = 0;
@@ -745,7 +745,6 @@ river.updatePosition = function () {
 	if (river.gps.buffer.points_data.length > 0 && $(".geoinfo").is(':visible') )
 		river.updatePositionViaPoints();
 }
-
 
 river.getTileURL = function(bounds) {
     var res = this.map.getResolution();
