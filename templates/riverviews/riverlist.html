@@ -1,27 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	<head>
-		<title>River Studies | River View Player 2.0 (Beta)</title>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />		    
-		<link rel='stylesheet' href='/media/css/riverviews.css' type='text/css' />
-		<script src="/media/js/jquery-1.7.min.js" type="text/javascript"></script>
-	</head>
-	  
-	<body>
+{% extends "base.html" %}
 
-		<div id="headinfo">River Studies | River View Player 2.0 (Beta)</div>
+{% block title %}| List Tracks{% endblock %}
+
+{% block headlinks %}
+{% endblock %}
+
+{% block content_part %}	
+
 		<div id="titlefield">
-			<span id="title">River Studies</span> 
+			<span id="title">River Studies / List</span> 
 		</div>
 
 	{% if tracks %}
 
-	<div id="track_list_data">
-	
-	<center>
-	<br /><br />
+	<div id="content">
 	<h2>List of recorded sessions</h2>
-	<br />
+	<div id="track_list_data">	
 	<table>
 		{% for track in tracks %}    
 		<tr>
@@ -48,13 +42,9 @@
 
 		{% endfor %}
 	</table>
-	</center>
 	{% endif %}
 	</div>
+	</div>
 
-		<div id="footer">
-			&copy 2005-2011, <a href="http://m.ash.to">Michael Aschauer</a> / <a href="http://www.riverstudies.org">riverstudies.org</a>
-		</div>
-			
-	</body>
-</html>
+
+{% endblock %}

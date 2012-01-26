@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}| {{ object.title}}{% endblock %}
+
+{% block headers %}
+
+{% ifequal object.name "making_of" %}
+<link rel="stylesheet" type="text/css" href="/media/shadowbox/shadowbox.css">
+<script type="text/javascript" src="/media/shadowbox/shadowbox.js"></script>
+<script type="text/javascript">
+Shadowbox.init();
+</script>
+{% endifequal %}
+
+{% endblock %}
+
+{% block content_part %}	
+
+	<div id="titlefield">
+		<span id="title">River Studies / {{object.title}}</span> 
+	</div>
+
+	<div id="content">
+	
+	{% autoescape off %}
+		{{ object.content}}
+	{% endautoescape %}
+
+	</div>
+
+
+{% endblock %}

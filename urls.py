@@ -5,17 +5,19 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-	(r'^list/', 'riverstudies.riverview.views.list'),
-	(r'^$','riverstudies.riverview.views.index'),
+    (r'^list/', 'riverstudies.riverview.views.list'),
+    (r'^$','riverstudies.riverview.views.index'),
 
-	(r'^view/', include('riverstudies.riverview.urls')),
+    (r'^view/', include('riverstudies.riverview.urls')),
+    (r'^page/', include('riverstudies.page.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-    (r'^media/(?P<path>.*)$', 'django.views.static.serve',{'document_root': '/data/projects/river-studies/django/apps/riverstudies/media'}),
+   
+    # (r'^media/(?P<path>.*)$', 'django.views.static.serve',{'document_root': '/data/projects/river-studies/django/apps/riverstudies/media'}),
 
 )
 

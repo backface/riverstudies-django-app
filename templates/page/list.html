@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}| List Tracks{% endblock %}
+
+{% block headlinks %}
+{% endblock %}
+
+{% block content_part %}	
+
+		<div id="titlefield">
+			<span id="title">Page List</span> 
+		</div>
+
+
+	<div id="content">
+{% if object_list %}
+	{% for object in object_list %}
+		<a class="link" href="{{object.id}}">{{object.title}}</a><br />
+	{% endfor %}
+{% else %}
+    <p>No pages available</p>
+{% endif %}
+	</div>
+
+
+{% endblock %}
