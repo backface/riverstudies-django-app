@@ -5,6 +5,7 @@
 		<script src="/media/js/riverviews.js" type="text/javascript"></script>
 {% endblock %}
 
+{% block title %} | {{track.title}} {% endblock %}
 {% block body_additions %} onload='river.load({{track.id}},{{offset}})' {% endblock %}
 
 {% block content_part %}	
@@ -124,7 +125,7 @@
 				</p>
 
 				<p>
-				It would not have been possible without the support from:<br />
+				it would not have been possible without support by:<br />
 				<ul>
 				<li><a href="http://www.bmukk.gv.at/kunst/index.xml">BMUKK</a> </li>
 				<li><a href="http://www.wien.gv.at/amtshelfer/kultur/kulturabteilung/foerderungen/neuemedien.html">Stadt Wien, MA 7</a></li>

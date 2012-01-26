@@ -24,7 +24,7 @@ def index(request,id=0):
 		tracks = Track.objects.all().order_by('-id')
 		id = tracks[0].id
 
-	track = Track.objects.get(id=id)
+	track = get_object_or_404(Track, pk=id) 
 	offset = 0
 	return render_to_response('riverviews/riverviews.html', locals())
 
@@ -81,7 +81,7 @@ def view(request,id=0,offset=0):
 	return render_to_response('riverviews/riverviews.html', locals())
 
 def view_by_name(request,name,offset=0):
-	track = Track.objects.get(name=name)
+	track = get_object_or_404(Track, name=name) 
 	return view(request,track.id,offset)
 
 
