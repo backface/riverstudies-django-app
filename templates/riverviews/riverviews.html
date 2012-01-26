@@ -5,7 +5,7 @@
 		<script src="/media/js/riverviews.js" type="text/javascript"></script>
 {% endblock %}
 
-{% block title %} | {{track.title}} {% endblock %}
+{% block title %} | {{track.river.name}}: {{track.title}} {% endblock %}
 {% block body_additions %} onload='river.load({{track.id}},{{offset}})' {% endblock %}
 
 {% block content_part %}	
