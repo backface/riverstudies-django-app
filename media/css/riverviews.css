@@ -52,7 +52,7 @@ a:hover {color:#fff}
 }
 
 #track_list_data, #about_content, #credits_content {font-size:14px;font-family: Georgia;overflow:auto;
-	color:#d0d0d0;padding-top:30px}
+	color:#d0d0d0;padding-top:20px}
 #track_list_data a, #track_list_data a:visited { color:#eee}
 #track_list_data a:hover {color:#fff}
 #track_list_data table {text-align:left;margin-top:20px}
