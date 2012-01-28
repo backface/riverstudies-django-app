@@ -3,6 +3,7 @@ from django.db import connection
 from django.core import serializers
 from django.http import HttpResponse
 from riverview.models import Track, TrackPoint, Label
+from page.models import Page
 import simplejson as json
 import datetime
 
@@ -26,6 +27,9 @@ def index(request,id=0):
 
 	track = get_object_or_404(Track, pk=id) 
 	offset = 0
+	about = get_object_or_404(Page, name="about")
+	credits = get_object_or_404(Page, name="credits")
+		
 	return render_to_response('riverviews/riverviews.html', locals())
 
 
@@ -74,6 +78,8 @@ def view(request,id=0,offset=0):
 
 	# load track
 	track = Track.objects.get(id=id)
+	about = get_object_or_404(Page, name="about")
+	credits = get_object_or_404(Page, name="credits")	
 	
 	if offset == 0:
 		offset = track.offset
@@ -81,7 +87,7 @@ def view(request,id=0,offset=0):
 	return render_to_response('riverviews/riverviews.html', locals())
 
 def view_by_name(request,name,offset=0):
-	track = get_object_or_404(Track, name=name) 
+	track = get_object_or_404(Track, name=name)
 	return view(request,track.id,offset)
 
 
