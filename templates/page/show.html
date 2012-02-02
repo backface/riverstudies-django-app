@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}| {{ object.title}}{% endblock %}
+{% block title %} {{ object.title}} | {% endblock %}
+{% block flattr_title %}{% filter urlencode %}{{object.title}} (River Studies - River View Player 2.0){% endfilter %}{% endblock %}
 
 {% block headers %}
 
@@ -30,3 +31,7 @@ Shadowbox.init();
 
 
 {% endblock %}
+
+
+
+

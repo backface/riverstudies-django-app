@@ -917,6 +917,7 @@ river.initControlButtons = function ()
 
 
 	if (river.labels.visible) $("#show_labels").html("Hide Labels");
+	
 	$("#show_labels").click(
 		function () {
 			if (river.labels.visible == false) {
@@ -978,6 +979,18 @@ river.initControlButtons = function ()
 			e.preventDefault(); 
 		}		
 	);
+
+	$("#show_donate").click(
+			function (e) {
+			if( $("#donate").is(':visible')) {
+				$("#donate").hide();
+			} else {
+				hideWindows();
+				$("#donate").show();
+			}
+			e.preventDefault(); 
+		}		
+	);	
 										
 }
 
@@ -1192,8 +1205,14 @@ function hideWindows() {
 		maps.detail.hide();
 	}	
 	$("#track_list").hide();
-	$("#about").hide();
-	$("#credits").hide();
+	$(".window").hide();
 }
 
+function renderFlattr(uid,url,title) {
+	FlattrLoader.render({
+			'uid': uid,
+			'url': url,
+			'title': title,
+		}, 'flattr_button', 'replace');
+}
 

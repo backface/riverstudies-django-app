@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}| List Tracks{% endblock %}
-
+{% block title %} List Tracks | {% endblock %}
+{% block flattr_title %}{% filter urlencode %}List Tracks - River View Player 2.0{% endfilter %}{% endblock %}
 {% block headlinks %}
 {% endblock %}
 
 {% block content_part %}	
 
 		<div id="titlefield">
-			<span id="title">River Studies / List</span> 
+			<span id="title">River Studies / List Tracks</span> 
 		</div>
 
 	{% if tracks %}

@@ -29,6 +29,7 @@ def index(request,id=0):
 	offset = 0
 	about = get_object_or_404(Page, name="about")
 	credits = get_object_or_404(Page, name="credits")
+	donate = get_object_or_404(Page, name="donate")
 		
 	return render_to_response('riverviews/riverviews.html', locals())
 
@@ -79,7 +80,8 @@ def view(request,id=0,offset=0):
 	# load track
 	track = Track.objects.get(id=id)
 	about = get_object_or_404(Page, name="about")
-	credits = get_object_or_404(Page, name="credits")	
+	credits = get_object_or_404(Page, name="credits")
+	donate = get_object_or_404(Page, name="donate")
 	
 	if offset == 0:
 		offset = track.offset
