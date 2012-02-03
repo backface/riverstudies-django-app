@@ -139,3 +139,11 @@
 		<script type="text/javascript" >resize()</script>
 
 {% endblock %}
+
+{% block flattr %}
+		<a href="https://flattr.com/submit/auto?user_id=m.ash&url={% filter urlencode %}{{request.build_absolute_uri }}{% endfilter %}&title={% filter urlencode %}{{ track.title }} (River Studies - River View Player 2.0){% endfilter %}&language=en_GB&tags=art,photography,rivers,slitscan&category=images">
+
+		<img src="https://api.flattr.com/button/flattr-badge-large.png" 
+		  alt="Flattr our API Documentation" />
+		</a>
+{% endblock %}

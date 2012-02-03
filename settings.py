@@ -4,7 +4,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    
+    ('admin', 'admin@localhost'),
 )
 
 MANAGERS = ADMINS

@@ -97,7 +97,9 @@ a:hover {color:#fff}
 #share {z-index:2010;position:absolute;
 	bottom:-1px;right:2px;
 	color:#ddd;font-size:8px;font-family:Arial,Helvetica,sans-serif;
-	background:#000;padding:0px}
+	background:#000;padding:0px;
+	opacity : 0.5;filter: alpha(opacity=50);
+	}
 .flattrlnk {margin-right:2px}
 	
 #flattr {

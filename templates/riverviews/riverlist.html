@@ -16,32 +16,9 @@
 	<div id="content">
 	<h2>List of recorded sessions</h2>
 	<div id="track_list_data">	
-	<table>
-		{% for track in tracks %}    
-		<tr>
-			<td class="rivername">
-				{% ifchanged %}
-					{{ track.river.name }}
-				{% endifchanged %}
-			</td>
-			<td class="trackname">
-				<a class="link" href="/view/{{ track.name }}">{{ track.title }}</a>
-			</td>		
-			<td class="tracklength">
-				{% if track.length %}
-					{{ track.length|floatformat }} km</a>
-				{% else %}
-					N/A
-				{% endif %}
-			</td>
-			<td class="trackyear">
-				{{ track.time|date:"Y"|upper }}
-			</td>			
-		</tr>
-		<!--{ last_river = track.river.name }-->
 
-		{% endfor %}
-	</table>
+	{% include "riverviews/tracklist_fragment.html" %}
+	
 	{% endif %}
 	</div>
 	</div>
